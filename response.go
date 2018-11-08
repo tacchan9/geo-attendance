@@ -1,4 +1,4 @@
-package ownerchanger
+package attendance
 
 type ResponseJson struct {
 	Status          string
@@ -7,22 +7,5 @@ type ResponseJson struct {
 	Users           string
 	ListSize        int
 	RecordDatas     []Records
-	DriveDatas      []DriveData
-	StatusDatas     []Status
-	StatusInfoDatas []StatusInfo
 	NextPageToken   string
-	Share           string
-	CreatedTime     string
-	ModifiedTime    string
-	MimeType        string
-}
-
-type DriveData struct {
-	Id           string
-	Name         string
-	MimeType     string
-	Owner        string
-	OwnerNm      string
-	PermissionId string
-	IconLink     string
 }

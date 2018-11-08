@@ -1,4 +1,4 @@
-package ownerchanger
+package attendance
 
 import (
 	"fmt"
@@ -22,47 +22,14 @@ func init() {
 
 	goji.Get("/register", register)
 
-	goji.Get("/driveListView", index)
-	goji.Post("/driveListView", driveListView)
 
-	goji.Post("/driveList", driveList)
+	goji.Get("/list", listView)
 
-	goji.Post("/ownerChange", ownerChange)
-
-	goji.Post("/ownerChangeCron", ownerChangeCron)
-
-	goji.Get("/statusListView", statusListView)
-	goji.Post("/statusListView", statusListView)
-
-	goji.Post("/statusList", statusList)
-
-	goji.Post("/statusInfoList", statusInfoList)
-
-	goji.Post("/statusListCursor", statusListCursor)
-	goji.Post("/statusInfoListCursor", statusInfoListCursor)
-
-	goji.Post("/taskQueueInfo", taskQueueInfo)
-
-	goji.Post("/taskQueuePurge", taskQueuePurge)
-
-	goji.Get("/settings", settings)
+	goji.Post("/listCursor", listCursor)
 
 	goji.Get("/exit", exit)
-	goji.Post("/upload", upload)
-	goji.Post("/ownerChangeUploadCron", ownerChangeUploadCron)
-
+	
 	goji.Get("/logout", logout)
-
-	goji.Get("/ngListView", ngListView)
-	goji.Post("/statusInfoNgListCursor", statusInfoNgListCursor)
-
-	goji.Post("/getNgStatus", getNgStatus)
-
-	goji.Post("/setSuggest", setSuggest)
-	goji.Post("/getSuggest", getSuggest)
-
-	goji.Get("/fileDownload", fileDownload)
-	goji.Post("/getDriveInfo", getDriveInfo)
 
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js"))))
@@ -133,46 +100,11 @@ func logout(c web.C, w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `<a href="%s">Sign out</a>`, logoutUrl)
 	return
 
-	/*data := map[string]interface{}{
-		"url": logoutUrl,
-	}
-
-	tmpl := template.Must(template.ParseFiles("pages/index.html", "pages/logout.html"))
-	tmpl.Execute(w, data)
-
-	log.Infof(ctx, "finish %s user: %s\n", funcNm, u)*/
 }
 
-func driveListView(c web.C, w http.ResponseWriter, r *http.Request) {
+func listView(c web.C, w http.ResponseWriter, r *http.Request) {
 
-	funcNm := "driveListView"
-
-	ctx := appengine.NewContext(r)
-	u := user.Current(ctx)
-
-	// nologin
-	if u == nil {
-		loginUrl, _ := user.LoginURL(ctx, "/")
-		fmt.Fprintf(w, `<a href="%s">Sign in</a>`, loginUrl)
-		return
-	}
-
-	log.Infof(ctx, "start %s user: %s\n", funcNm, u)
-
-	data := map[string]interface{}{
-		"userEmail": r.FormValue("userEmail"),
-	}
-	log.Infof(ctx, "start %s ¥n", r.FormValue("userEmail"))
-
-	tmpl := template.Must(template.ParseFiles("pages/index.html", "pages/drive_list.html"))
-	tmpl.Execute(w, data)
-
-	log.Infof(ctx, "finish %s user: %s\n", funcNm, u)
-}
-
-func statusListView(c web.C, w http.ResponseWriter, r *http.Request) {
-
-	funcNm := "statusListView"
+	funcNm := "listView"
 
 	ctx := appengine.NewContext(r)
 	u := user.Current(ctx)
@@ -190,59 +122,7 @@ func statusListView(c web.C, w http.ResponseWriter, r *http.Request) {
 		"userEmail": "",
 	}
 
-	tmpl := template.Must(template.ParseFiles("pages/index.html", "pages/status_list.html"))
-	tmpl.Execute(w, data)
-
-	log.Infof(ctx, "finish %s user: %s\n", funcNm, u)
-}
-
-func settings(c web.C, w http.ResponseWriter, r *http.Request) {
-
-	funcNm := "settings"
-
-	ctx := appengine.NewContext(r)
-	u := user.Current(ctx)
-
-	// nologin
-	if u == nil {
-		loginUrl, _ := user.LoginURL(ctx, "/")
-		fmt.Fprintf(w, `<a href="%s">Sign in</a>`, loginUrl)
-		return
-	}
-
-	log.Infof(ctx, "start %s user: %s\n", funcNm, u)
-
-	data := map[string]interface{}{
-		"userEmail": "",
-	}
-
-	tmpl := template.Must(template.ParseFiles("pages/index.html", "pages/settings.html"))
-	tmpl.Execute(w, data)
-
-	log.Infof(ctx, "finish %s user: %s\n", funcNm, u)
-}
-
-func ngListView(c web.C, w http.ResponseWriter, r *http.Request) {
-
-	funcNm := "ngListView"
-
-	ctx := appengine.NewContext(r)
-	u := user.Current(ctx)
-
-	// nologin
-	if u == nil {
-		loginUrl, _ := user.LoginURL(ctx, "/")
-		fmt.Fprintf(w, `<a href="%s">Sign in</a>`, loginUrl)
-		return
-	}
-
-	log.Infof(ctx, "start %s user: %s\n", funcNm, u)
-
-	data := map[string]interface{}{
-		"userEmail": "",
-	}
-
-	tmpl := template.Must(template.ParseFiles("pages/index.html", "pages/ng_list.html"))
+	tmpl := template.Must(template.ParseFiles("pages/index.html", "pages/list.html"))
 	tmpl.Execute(w, data)
 
 	log.Infof(ctx, "finish %s user: %s\n", funcNm, u)
