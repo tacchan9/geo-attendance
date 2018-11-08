@@ -1,0 +1,31 @@
+{{ define "content" }}
+<table class="highlight bordered">
+	<thead id="headerStatus">
+    	<tr>
+        	<th style="width:30%">入退室</th>
+            <th style="width:70%">時刻</th>
+
+        </tr>
+    </thead>
+
+    <tbody class="white" id="recordDatas"></tbody>
+</table>
+<div id="preloader">
+	<div class="row" style="height:50px"></div>
+    <div class="row" align="center">
+    	<div class="preloader-wrapper big active">
+        	<div class="spinner-layer spinner-blue-only">
+            	<div class="circle-clipper left">
+                	<div class="circle"></div>
+                </div>
+               	<div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                	<div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

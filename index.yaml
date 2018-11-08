@@ -1,0 +1,6 @@
+indexes:
+- kind: Records
+  properties:
+  - name: User
+  - name: InsertDate
+    direction: desc
