@@ -1,9 +1,7 @@
-var geo = [];
 var listSize = 10;
 
 $(document).ready(function(){
     
-    geo = currentGeo();
 
     $('.menu').sideNav({
         menuWidth: 300,
@@ -13,20 +11,14 @@ $(document).ready(function(){
     });
     
     if (location.pathname == "/") {
-    	
-    	index('1');
-    	
-	}
+    	register('1');
+    }
 	
 	if (location.pathname == "/exit") {
-    	index('2');
-    	
-    	
+    	register('2');    	
 	}
-
     
-    if (location.pathname == "/list") {
-    	
+    if (location.pathname == "/list") {	
 		getList();
     }
     		
@@ -38,30 +30,6 @@ $(document).ready(function(){
 
 });
 
-var currentGeo = function() {
-	
-	var geo = [0, 0];
-	
-	if( navigator.geolocation ){// 現在位置を取得できる場合の処理
-      // 現在位置を取得する
-      navigator.geolocation.getCurrentPosition( success, error, option);
-      /*現在位置が取得できた時に実行*/
-      function success(position){
-        var data = position.coords;
-        // 必要な緯度経度だけ取得
-        //var lat = data.latitude;
-        //var lng = data.longitude;
-        alert(data.latitude);
-        alert(data.longitude);
-        
-        geo[0] = data.latitude;
-        geo[1] = data.longitude;
-      }
-    }
-    
-    return geo;
-};
-
 function error(error){
     var errorMessage = {
       0: "原因不明のエラーが発生しました。",
@@ -69,18 +37,17 @@ function error(error){
       2: "位置情報が取得できませんでした。",
       3: "タイムアウトしました。",
     } ;
-    //とりあえずalert
-    //alert( errorMessage[error.code]);
+    alert( errorMessage[error.code]);
 }
 
 // オプション(省略可)
 var option = {
-    "enableHighAccuracy": false,
-    "timeout": 100 ,
-    "maximumAge": 100 ,
+    /*"enableHighAccuracy": false,
+    "timeout": 500 ,
+    "maximumAge": 500 ,*/
 };
 
-var index = function(type) {
+var register = function(type) {
 	
   var app = new Vue({
     el: '#app',
@@ -90,27 +57,33 @@ var index = function(type) {
     },
     methods: {
       enter: function (event) {
-      	//var geo = currentGeo();
-      	axios
-        .get('/register',
-          {
-            params: {
-              type: type,
-              lon: geo[1],
-              lat: geo[0]
-          }
-        })
-        //.then(response => (this.info = response))
-        .then(function(response) {
-        	//alert(response.data['disclaimer']);
-        	if (type == '1') {
-        	  toastMsg("入室しました");
+      	
+      	if( navigator.geolocation ){
+      		navigator.geolocation.getCurrentPosition( function(position) {
+        		var data = position.coords;        
         		
-        	} else {
-        	  toastMsg("退室しました");
-        		
-        	}
-        });
+		      	axios
+		        .get('/register',
+		          {
+		            params: {
+		              type: type,
+		              lon: data.longitude,
+		              lat: data.latitude
+		          }
+		        })
+		        .then(function(response) {
+		        	if (type == '1') {
+		        	  toastMsg("入室しました");
+		        		
+		        	} else {
+		        	  toastMsg("退室しました");
+		        		
+		        	}
+		        });
+      			
+      		}, error, option);      
+	    }    
+
       },
     }
   });
@@ -125,7 +98,7 @@ var toastMsg = function(msg) {
 }
 
 var getList = function(nextPageToken) {
-			
+	
     $.ajax({
     	type: 'POST',
     	url: '/listCursor',
