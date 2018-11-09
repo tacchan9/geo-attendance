@@ -1,5 +1,5 @@
 var listSize = 3;
-var apiKey = "AIzaSyBmmKvBToLI_MMj5N_IU2d5E2DX6KV3O6o";
+var apiKey = "";
 
 $(document).ready(function(){    
 
