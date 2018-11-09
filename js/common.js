@@ -1,7 +1,6 @@
 var listSize = 10;
 
-$(document).ready(function(){
-    
+$(document).ready(function(){    
 
     $('.menu').sideNav({
         menuWidth: 300,
@@ -19,11 +18,10 @@ $(document).ready(function(){
 	}
     
     if (location.pathname == "/list") {	
-		getList();
+		getListVue();
     }
     		
-	if (location.pathname == "/logout") {
-    	
+	if (location.pathname == "/logout") {    	
     	window.location.href = $('#logoutUrl').text();
 
 	}
@@ -51,9 +49,10 @@ var register = function(type) {
 	
   var app = new Vue({
     el: '#app',
+    delimiters: ['${', '}'],
     data: {
       date: moment().format("YYYY-MM-DD"),
-     //geo: currentGeo()
+      message: 'abc'
     },
     methods: {
       enter: function (event) {
@@ -79,6 +78,8 @@ var register = function(type) {
 		        	  toastMsg("退室しました");
 		        		
 		        	}
+		        	$('#txt').text(response.data.Message);
+		        	//this.message = response.data['Message'];
 		        });
       			
       		}, error, option);      
@@ -95,6 +96,86 @@ var toastMsg = function(msg) {
 		  		
   	Materialize.toast($toastContent, 5000);  	
 
+}
+var showInfo = function(){
+	alert("abc");
+
+    $('.driveInfo').sideNav({
+        menuWidth: 500,
+        edge: 'right',
+        closeOnClick: true,
+        draggable: false,
+        onOpen: function() {              
+            var latitude = $(this).attr("latitude");
+            var longitude = $(this).attr("longitude");
+              
+              var url = 'https://maps.google.co.jp/maps?output=embed&q=' + latitude + ',' + longitude;
+              alert(url);
+              
+              document.getElementById('map').contentWindow.location.replace(url);
+              $('#geo').text(latitude + ',' + longitude);
+
+        }
+    });
+
+}
+
+var getListVue = function(nextPageToken) {
+	
+  new Vue({
+    el: '#app',
+    delimiters: ['${', '}'],
+    data: {
+      date: moment().format("YYYY-MM-DD"),
+      message: '',
+
+      items: [],
+      /*items: [
+      { Type: 'Foo' },
+      { Type: 'Bar' }
+      ]*/
+    },
+    //prefetch() {
+    mounted () {
+    axios
+      .post('/listCursor',
+      //.get('https://api.coindesk.com/v1/bpi/currentprice.json',
+		{
+			params: {
+		    	type: nextPageToken,
+		     }
+	  })
+      //.then(response => (this.message = response.data.Status))
+		        /*.then(function(response) {
+		        	this.message = response.data.Status;
+		        });*/
+		.then( response => {
+            $('#preloader').hide()
+
+  			this.message = response.data.RecordDatas
+            this.items = response.data.RecordDatas
+                        //setTimeout(showInfo(), 5000)
+
+                        
+            
+		})
+		
+		//todo error
+    },
+    updated () {
+    	showInfo();
+    },
+    methods: {
+        select: function (event) {
+            $('table tr').removeClass("blue");
+            $('table tr').removeClass("white-text");
+            
+            event.currentTarget.className += " blue white-text";
+        }
+    }  
+  });
+
+	
 }
 
 var getList = function(nextPageToken) {

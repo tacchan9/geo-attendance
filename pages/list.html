@@ -1,4 +1,6 @@
 {{ define "content" }}
+<div id="app">
+
 <table class="highlight bordered">
 	<thead id="headerStatus">
     	<tr>
@@ -7,9 +9,17 @@
 
         </tr>
     </thead>
-
-    <tbody class="white" id="recordDatas"></tbody>
+    <tbody class="white" id="recordDatas">
+        <tr  v-on:click="select" v-for="item in items" class="driveInfo" data-activates="driveInfo" v-bind:idstr=item.Id v-bind:latitude=item.Latitude v-bind:longitude=item.longitude>
+          <td>
+          　　<div v-if="item.Type == 1"　class="green-text">入室</div>
+          　　<div v-else　class="red-text">退室</div>
+          </td>
+          <td>${item.Time}</td>
+        </tr>
+    </tbody>
 </table>
+</div>
 <div id="preloader">
 	<div class="row" style="height:50px"></div>
     <div class="row" align="center">
