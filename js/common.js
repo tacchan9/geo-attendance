@@ -1,5 +1,5 @@
 var listSize = 3;
-var apiKey = "";
+var apiKey = "AIzaSyBmmKvBToLI_MMj5N_IU2d5E2DX6KV3O6o";
 
 $(document).ready(function(){    
 
@@ -202,11 +202,8 @@ var getListVue = function(nextPageToken) {
 }
 
 var getAddr = function(lat, lon) {
-	//var latitude = '35.6811673';
-    //var longitude = '139.7648629';
 	var latitude = lat;
     var longitude = lon;
-    //var apiKey = 'AIzaSyBmmKvBToLI_MMj5N_IU2d5E2DX6KV3O6o';
     var requestURL = 'https://maps.googleapis.com/maps/api/geocode/json?language=ja&sensor=false';
     requestURL += '&latlng=' + latitude + ',' + longitude;
     requestURL += '&key=' + apiKey;
