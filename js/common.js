@@ -1,4 +1,5 @@
 var listSize = 3;
+var apiKey = "";
 
 $(document).ready(function(){    
 
@@ -107,11 +108,14 @@ var showInfo = function(){
             var latitude = $(this).attr("latitude");
             var longitude = $(this).attr("longitude");
               
-              var url = 'https://maps.google.co.jp/maps?output=embed&q=' + latitude + ',' + longitude;
-              alert(url);
+              //var url = 'https://maps.google.co.jp/maps?output=embed&q=' + latitude + ',' + longitude;
+              //alert(url);
+              var url = 'https://www.google.com/maps/embed/v1/place?key=' + apiKey + '&q=' + latitude + ',' + longitude;
               
               document.getElementById('map').contentWindow.location.replace(url);
+
               $('#geo').text(latitude + ',' + longitude);
+              getAddr(latitude, longitude);
 
         }
     });
@@ -146,11 +150,22 @@ var getListVue = function(nextPageToken) {
         },
         getDatas: function (direction) {
         	
-        	if (direction == "before" && this.index > 0) {
+        	if (direction == "before" && this.index == 0) {
+        		toastMsg("前ページがありません");
+        		return
+        	}
+        	
+        	if (direction == "next" && this.listSize == 0) {
+        		toastMsg("次ページがありません");
+        		return
+        	}
+        	
+        	if (direction == "before") {
         		this.index--;
-        	} else if (direction == "next" && this.listSize != 0) {
+        	} else if (direction == "next") {
         		this.index++;
         	}
+        	
 		    axios
 		      .get('/listCursor',
 				{
@@ -168,11 +183,7 @@ var getListVue = function(nextPageToken) {
 		            if (direction != "before" && this.listSize != 0) {
 			            this.pageToken[this.index+1] = response.data.NextPageToken		            	
 		            }
-		            
-		            if (this.listSize == 0) {
-		            	toastMsg("データがありません");
-		            }
-		      
+		            		      
 		        })
 				
 				//todo error
@@ -188,6 +199,33 @@ var getListVue = function(nextPageToken) {
   });
 
 	
+}
+
+var getAddr = function(lat, lon) {
+	//var latitude = '35.6811673';
+    //var longitude = '139.7648629';
+	var latitude = lat;
+    var longitude = lon;
+    //var apiKey = 'AIzaSyBmmKvBToLI_MMj5N_IU2d5E2DX6KV3O6o';
+    var requestURL = 'https://maps.googleapis.com/maps/api/geocode/json?language=ja&sensor=false';
+    requestURL += '&latlng=' + latitude + ',' + longitude;
+    requestURL += '&key=' + apiKey;
+    
+    axios
+	  .get(requestURL,
+		{
+			/*params: {
+		    	type: type,
+		        lon: data.longitude,
+		        lat: data.latitude
+		    }*/
+	  })
+	  .then(function(response) {
+	  	var addr = response.data.results[0]['formatted_address'];
+		console.log(response.data);
+		$('#addr').text(addr);
+	  });    
+    
 }
 
 var getList = function(nextPageToken) {
