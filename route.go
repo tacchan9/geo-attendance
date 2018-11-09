@@ -25,7 +25,7 @@ func init() {
 
 	goji.Get("/list", listView)
 
-	goji.Post("/listCursor", listCursor)
+	goji.Get("/listCursor", listCursor)
 
 	goji.Get("/exit", exit)
 	

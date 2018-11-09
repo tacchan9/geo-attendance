@@ -1,4 +1,4 @@
-var listSize = 10;
+var listSize = 3;
 
 $(document).ready(function(){    
 
@@ -52,7 +52,7 @@ var register = function(type) {
     delimiters: ['${', '}'],
     data: {
       date: moment().format("YYYY-MM-DD"),
-      message: 'abc'
+      message: ''
     },
     methods: {
       enter: function (event) {
@@ -79,7 +79,6 @@ var register = function(type) {
 		        		
 		        	}
 		        	$('#txt').text(response.data.Message);
-		        	//this.message = response.data['Message'];
 		        });
       			
       		}, error, option);      
@@ -98,9 +97,8 @@ var toastMsg = function(msg) {
 
 }
 var showInfo = function(){
-	alert("abc");
 
-    $('.driveInfo').sideNav({
+    $('.record').sideNav({
         menuWidth: 500,
         edge: 'right',
         closeOnClick: true,
@@ -128,39 +126,14 @@ var getListVue = function(nextPageToken) {
     data: {
       date: moment().format("YYYY-MM-DD"),
       message: '',
+      index: 0,
+      pageToken: new Array(100),
+      listSize: 0,
 
       items: [],
-      /*items: [
-      { Type: 'Foo' },
-      { Type: 'Bar' }
-      ]*/
     },
-    //prefetch() {
     mounted () {
-    axios
-      .post('/listCursor',
-      //.get('https://api.coindesk.com/v1/bpi/currentprice.json',
-		{
-			params: {
-		    	type: nextPageToken,
-		     }
-	  })
-      //.then(response => (this.message = response.data.Status))
-		        /*.then(function(response) {
-		        	this.message = response.data.Status;
-		        });*/
-		.then( response => {
-            $('#preloader').hide()
-
-  			this.message = response.data.RecordDatas
-            this.items = response.data.RecordDatas
-                        //setTimeout(showInfo(), 5000)
-
-                        
-            
-		})
-		
-		//todo error
+    	this.getDatas();
     },
     updated () {
     	showInfo();
@@ -168,10 +141,49 @@ var getListVue = function(nextPageToken) {
     methods: {
         select: function (event) {
             $('table tr').removeClass("blue");
-            $('table tr').removeClass("white-text");
-            
+            $('table tr').removeClass("white-text");          
             event.currentTarget.className += " blue white-text";
-        }
+        },
+        getDatas: function (direction) {
+        	
+        	if (direction == "before" && this.index > 0) {
+        		this.index--;
+        	} else if (direction == "next" && this.listSize != 0) {
+        		this.index++;
+        	}
+		    axios
+		      .get('/listCursor',
+				{
+					params: {
+				    	nextPageToken: this.pageToken[this.index],
+				     }
+			  })
+				.then( response => {
+		            $('#preloader').hide()
+		            		
+		  			this.message = response.data.RecordDatas
+		            this.items = response.data.RecordDatas
+		            this.listSize = parseInt(response.data.ListSize)
+		            
+		            if (direction != "before" && this.listSize != 0) {
+			            this.pageToken[this.index+1] = response.data.NextPageToken		            	
+		            }
+		            
+		            if (this.listSize == 0) {
+		            	toastMsg("データがありません");
+		            }
+		      
+		        })
+				
+				//todo error
+        },
+
+        next: function () {
+        	this.getDatas('next');
+        },
+        before: function () {
+        	this.getDatas('before');
+        },
     }  
   });
 

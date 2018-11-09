@@ -17,7 +17,7 @@ import (
 
 var dataStoreVersion = "1"
 
-var listSize = 10
+var listSize = 3
 
 // rand start
 var rs1Letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -123,6 +123,7 @@ func listCursor(c web.C, w http.ResponseWriter, rq *http.Request) {
 
 
 	cursor, err := datastore.DecodeCursor(rq.FormValue("nextPageToken"))
+	log.Infof(ctx, "start %s token: %s\n", funcNm, rq.FormValue("nextPageToken"))
 	if err == nil {
 		q = q.Start(cursor)
 	}
@@ -146,7 +147,7 @@ func listCursor(c web.C, w http.ResponseWriter, rq *http.Request) {
 			break
 		}
 		if err != nil {
-			log.Errorf(ctx, "%s :q.t.Next(&status) %v", funcNm, err)
+			log.Errorf(ctx, "%s :q.t.Next(&records) %v", funcNm, err)
 			break
 		}
 

@@ -1,10 +1,13 @@
 {{ define "content" }}
-      <div class="row">
+      <div class="row" id="app">
         <form class="col s12" name="form">
           <br>
           <div class="row">
-            <div class="input-field col l12" id="app" align="center">
-              <button v-on:click="enter" onclick="return false" class = "waves-effect waves-light btn blue">退出</button>
+            <div class="input-field col l12" align="center">
+              <button v-on:click="enter" onclick="return false" class = "waves-effect waves-light btn blue">退室</button>
+            </div>
+            <div class="input-field col l12" align="center" id="txt">
+              ${ message }
             </div>
           </div>
         </form>

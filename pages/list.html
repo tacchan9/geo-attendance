@@ -10,7 +10,7 @@
         </tr>
     </thead>
     <tbody class="white" id="recordDatas">
-        <tr  v-on:click="select" v-for="item in items" class="driveInfo" data-activates="driveInfo" v-bind:idstr=item.Id v-bind:latitude=item.Latitude v-bind:longitude=item.longitude>
+        <tr  v-on:click="select" v-for="item in items" class="record" data-activates="driveInfo" v-bind:idstr=item.Id v-bind:latitude=item.Latitude v-bind:longitude=item.Longitude>
           <td>
           　　<div v-if="item.Type == 1"　class="green-text">入室</div>
           　　<div v-else　class="red-text">退室</div>
@@ -19,6 +19,15 @@
         </tr>
     </tbody>
 </table>
+<div class="row">
+            <div class="input-field col l1" align="center">
+              <button v-on:click="before" onclick="return false" class = "waves-effect waves-light btn blue">前</button>
+            </div>
+            <div class="input-field col l10" align="center"></div>
+            <div class="input-field col l1" align="center">
+              <button v-on:click="next" class = "waves-effect waves-light btn blue">次</button>
+            </div>
+</div>
 </div>
 <div id="preloader">
 	<div class="row" style="height:50px"></div>
